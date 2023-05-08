@@ -1,23 +1,36 @@
-import logo from './logo.svg';
+import React, { useState, useEffect } from "react";
 import './App.css';
 
 function App() {
+  const [quotes, setQuotes] = useState([]);
+
+  useEffect(() => {
+    fetch("https://api.breakingbadquotes.xyz/v1/quotes")
+      .then(response => response.json())
+      .then(data => {
+        setQuotes(data);
+      })
+      .catch(error => console.log(error));
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <h1 className="header">Breaking Bad Quotes</h1>
+      <div className="accordion">
+        {quotes.map((quote, index) => (
+          <div key={index}>
+            <input type="radio" name="example_accordion" id={`section${index + 1}`} className="accordion__input" />
+            <label htmlFor={`section${index + 1}`} className="accordion__label">{`Quote #${index + 1}`}</label>
+            <div className="accordion__content">
+              <p>{quote.author}</p>
+              <p className="quotes">
+                {quote.quote}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+      <button onClick={() => window.location.reload()}>Refresh Page</button>
     </div>
   );
 }
